@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Covid-19 Estimator</title>
+    <link rel="stylesheet" href="./src/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <meta name="description" content="Covid-19 estimator" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta content="utf-8" http-equiv="encoding" />
+  </head>
+
+  <body>
+    <header id="title">
+      <h1>Covid-19 Estimator</h1>
+    </header>
+    <div class="main">
+      <div id="form" class="panel">
+        <p id="description">
+          This is an Estimator to estimate the future impact of Covid-19
+        </p>
+        <form id="survey-form">
+          <div class="left-tab">
+            <label for="data-population">Population: </label>
+          </div>
+          <div class="right-tab">
+            <input
+              type="number"
+              data-population
+              min="0"
+              id="data-population"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <div class="left-tab">
+            <label for="data-reported-cases">Reported Cases:</label>
+          </div>
+          <div class="right-tab">
+            <input
+              type="number"
+              data-reported-cases
+              min="0"
+              id="data-reported-cases"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <div class="left-tab">
+            <label for="data-total-hospital-beds">Total Hospital Beds:</label>
+          </div>
+          <div class="right-tab">
+            <input
+              type="number"
+              data-total-hospital-beds
+              min="0"
+              id="data-total-hospital-beds"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <div class="left-tab">
+            <label for="data-time-to-elapse"> Time to Elapse: </label>
+          </div>
+          <div class="right-tab">
+            <input
+              type="number"
+              data-time-to-elapse
+              min="0"
+              id="data-time-to-elapse"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <div class="left-tab">
+            <label for="data-period-type"
+              >Select the period of the inputed time above:</label
+            >
+          </div>
+          <div class="right-tab">
+            <select data-period-type id="data-period-type" class="dropdown">
+              <option>Days</option>
+              <option>Weeks</option>
+              <option>Months</option>
+            </select>
+          </div>
+          <input type="submit" data-go-estimate id="submit" />
+        </form>
+      </div>
+      <div id="data-info" class="panel" style="display: none;"></div>
+    </div>
+    <script type="module">
+      import covid19ImpactEstimator from "./src/estimator.js";
+      function getData(e) {
+        e.preventDefault();
+        var population = document.getElementById("data-population").value;
+        var periodType = document.getElementById("data-period-type").value;
+        var timeToElapse = document.getElementById("data-time-to-elapse").value;
+        var reportedCases = document.getElementById("data-reported-cases")
+          .value;
+        var totalHospitalBeds = document.getElementById(
+          "data-total-hospital-beds"
+        ).value;
+
+        let data = {
+          region: {
+            name: "Africa",
+            avgAge: 19.7,
+            avgDailyIncomeInUSD: 5,
+            avgDailyIncomePopulation: 0.71
+          },
+          periodType: periodType,
+          timeToElapse: timeToElapse,
+          reportedCases: reportedCases,
+          population: population,
+          totalHospitalBeds: totalHospitalBeds
+        };
+        var result = covid19ImpactEstimator(data);
+        if (result) {
+          var dataInfo = document.getElementById("data-info");
+          var resultHtml =
+            "<div class ='left-tab result-tabs'><h4 class='result-heading'>Impact</h4>" +
+            "<p><b>Currently infected: </b> " +
+            result.impact.currentlyInfected +
+            "</p>" +
+            "<p><b>Infections by requested time: </b> " +
+            result.impact.infectionsByRequestedTime +
+            "</p>" +
+            "<p><b>Severe cases by requested time: </b> " +
+            result.impact.severeCasesByRequestedTime +
+            "</p>" +
+            "<p><b>Hospital beds by requested time: </b> " +
+            result.impact.hospitalBedsByRequestedTime +
+            "</p>" +
+            "<p><b>Cases for ICU by requested time: </b> " +
+            result.impact.casesForICUByRequestedTime +
+            "</p>" +
+            "<p><b>Cases for ventilators by requested time: </b> " +
+            result.impact.casesForVentilatorsByRequestedTime +
+            "</p>" +
+            "<p><b>Dollars in flight: </b> " +
+            result.impact.dollarsInFlight +
+            "</p></div>" +
+            "<div class='right-tab result-tabs'><h4 class='result-heading'>SevereImpact</h4>" +
+            "<p><b>Currently Infected: </b> " +
+            result.severeImpact.currentlyInfected +
+            "</p>" +
+            "<p><b>Infections by requested time: </b> " +
+            result.severeImpact.infectionsByRequestedTime +
+            "</p>" +
+            "<p><b>Severe cases by requested time: </b> " +
+            result.severeImpact.severeCasesByRequestedTime +
+            "</p>" +
+            "<p><b>Hospital beds by requested time: </b> " +
+            result.severeImpact.hospitalBedsByRequestedTime +
+            "</p>" +
+            "<p><b>Cases for ICU by requested time: </b> " +
+            result.severeImpact.casesForICUByRequestedTime +
+            "</p>" +
+            "<p><b>Cases for ventilators by requested time: </b> " +
+            result.severeImpact.casesForVentilatorsByRequestedTime +
+            "</p>" +
+            "<p><b>Dollars in flight: </b> " +
+            result.severeImpact.dollarsInFlight +
+            "</p></div>";
+
+          dataInfo.innerHTML = resultHtml;
+          dataInfo.style.display = "block";
+        }
+      }
+      document
+        .getElementById("survey-form")
+        .addEventListener("submit", getData);
+    </script>
+  </body>
+</html>
