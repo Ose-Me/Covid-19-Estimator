@@ -4,10 +4,10 @@ const getInfectionsByRequestedTime = (
   currentlyInfected
 ) => {
   let value = elapseTime;
-  if (periodType === "weeks") {
+  if (periodType === 'weeks') {
     value *= 7;
   }
-  if (periodType === "months") {
+  if (periodType === 'months') {
     value *= 30;
   }
   const x = Math.trunc(value / 3);
@@ -24,10 +24,10 @@ const getDollarsInFlight = (
   periodType
 ) => {
   let days = daysInput;
-  if (periodType === "weeks") {
+  if (periodType === 'weeks') {
     days *= 7;
   }
-  if (periodType === "months") {
+  if (periodType === 'months') {
     days *= 30;
   }
 
